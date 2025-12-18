@@ -1,18 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Static Website</title>
-    <style>
-        body { font-family: sans-serif; margin: 40px; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        p { color: #666; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Menu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome to My Static Website</h1>
-        <p>This is a sample static webpage. The content is fixed and does not change unless the source file is updated.</p>
-        <p>You can learn more about static websites from sources like [W3Schools](
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <h1 class="text-2xl font-bold">🍽️ Bistro Delights</h1>
+      <p class="text-sm text-gray-500">Explore our handcrafted menu</p>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <section class="max-w-5xl mx-auto px-4 py-4">
+    <div class="flex gap-2 flex-wrap">
+      <button onclick="filterMenu('all')" class="filter-btn">All</button>
+      <button onclick="filterMenu('starters')" class="filter-btn">Starters</button>
+      <button onclick="filterMenu('mains')" class="filter-btn">Main Course</button>
+      <button onclick="filterMenu('desserts')" class="filter-btn">Desserts</button>
+      <button onclick="filterMenu('drinks')" class="filter-btn">Drinks</button>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <main class="max-w-5xl mx-auto px-4 space-y-10 pb-24">
+
+    <!-- Starters -->
+    <section id="starters" class="menu-category" data-category="starters">
+      <h2 class="category-title">Starters</h2>
+      <div class="menu-item">Tomato Soup <span>$6</span></div>
+      <div class="menu-item">Garlic Bread <span>$5</span></div>
+    </section>
+
+    <!-- Mains -->
+    <section id="mains" class="menu-category" data-category="mains">
+      <h2 class="category-title">Main Course</h2>
+      <div class="menu-item">Grilled Chicken <span>$14</span></div>
+      <div class="menu-item">Pasta Alfredo <span>$12</span></div>
+    </section>
+
+    <!-- Desserts -->
+    <section id="desserts" class="menu-category" data-category="desserts">
+      <h2 class="category-title">Desserts</h2>
+      <div class="menu-item">Chocolate Cake <span>$7</span></div>
+      <div class="menu-item">Ice Cream Sundae <span>$6</span></div>
+    </section>
+
+    <!-- Drinks -->
+    <section id="drinks" class="menu-category" data-category="drinks">
+      <h2 class="category-title">Drinks</h2>
+      <div class="menu-item">Fresh Lemonade <span>$4</span></div>
+      <div class="menu-item">Espresso <span>$3</span></div>
+    </section>
+
+  </main>
+
+  <!-- Floating Menu Button -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <details class="relative">
+      <summary class="bg-black text-white rounded-full w-14 h-14 flex items-center justify-center text-xl shadow-lg cursor-pointer">☰</summary>
+      <div class="absolute bottom-16 right-0 bg-white rounded-xl shadow-lg p-4 w-48">
+        <a href="#starters" class="menu-link">Starters</a>
+        <a href="#mains" class="menu-link">Main Course</a>
+        <a href="#desserts" class="menu-link">Desserts</a>
+        <a href="#drinks" class="menu-link">Drinks</a>
+      </div>
+    </details>
+  </div>
+
+  <!-- Styles -->
+  <style>
+    .filter-btn {
+      @apply px-4 py-2 bg-white border rounded-full text-sm shadow hover:bg-black hover:text-white transition;
+    }
+    .category-title {
+      @apply text-xl font-semibold mb-4;
+    }
+    .menu

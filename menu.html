@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAMUDRA GRAND | Menu</title>
+    <style>
+        :root {
+            /* Dark ocean blue brand */
+            --brand: #0b5fa5;
+            --bg: #f5f5f5;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        header {
+            background: #ffffff;
+            padding: 16px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border);
+        }
+        /* Highlight restaurant name */
+        header .brand {
+            color: var(--brand);
+            letter-spacing: 0.5px;
+        }
+        header .sub {
+            color: #334155;
+        }
+        header .wave {
+            display: inline-block;
+            margin-left: 6px;
+            color: var(--brand);
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        /* Carousel (replaces scrolling text banner) */
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            background: #e6f0fa;
+        }
+        .carousel-track {
+            display: flex;
+            will-change: transform;
+            transition: transform 500ms ease;
+        }
+        .slide {
+            min-width: 100%;
+            position: relative;
+            height: 170px; /* Adjust height as needed */
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .slide .caption {
+            position: absolute;
+            left: 14px;
+            bottom: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            backdrop-filter: blur(6px);
+            background: rgba(11,95,165,0.35);
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+        .dots {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 10px;
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.55);
+            border: 1px solid rgba(0,0,0,0.1);
+            pointer-events: auto;
+            cursor: pointer;
+        }
+        .dot.active {
+            background: var(--brand);
+            border-color: rgba(255,255,255,0.9);
+        }
+
+        .filters {
+            position: sticky;
+            top: 60px;
+            z-index: 9;
+            display: flex;
+            gap: 10px;
+            padding: 10px 16px 14px;
+            justify-content: center;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+        .filters button {
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            color: #111827;
+        }
+        .filters button.active {
+            background: var(--brand);
+            color: #fff;
+            border-color: var(--brand);
+        }
+
+        /* Layout */
+        #menu {
+            max-width: 1060px;
+            margin: 16px auto 96px;
+            padding: 0 16px;
+        }
+        .category {
+            margin: 28px 0;
+        }
+        .category h2 {
+            margin: 0 0 14px;
+            font-size: 20px;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .category h2::before {
+            content: '';
+            width: 6px;
+            height: 20px;
+            border-radius: 3px;
+            background: var(--brand);
+            display: inline-block;
+        }
+        .items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+        }
+
+        /* Cards */
+        .item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            overflow: hidden;
+        }
+        .item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.08);
+        }
+        .thumb {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: #eef2f7;
+            border: 1px solid #e2e8f0;
+        }
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .item-title { min-width: 0; display: flex; flex-direction: column; }
+        .item-title .name-en { font-size: 16px; font-weight: 700; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .item-title .name-te { font-size: 13px; font-weight: 600; color: #475569; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .price {
+            font-weight: 700;
+            color: #1e293b;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 999px;
+            flex-shrink: 0;
+        }
+        .desc {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0 0 10px;
+            min-height: 2em;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            border: 1px solid transparent;
+            user-select: none;
+            width: fit-content;
+        }
+        .badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .badge.veg { background: #e8f5e9; color: #2e7d32; border-color: #b7e1be; }
+        .badge.veg .dot { background: #2e7d32; }
+        .badge.nonveg { background: #fdecea; color: #c62828; border-color: #f5c2c0; }
+        .badge.nonveg .dot { background: #c62828; }
+
+        /* Empty state */
+        .empty {
+            max-width: 620px;
+            margin: 40px auto;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        /* Floating Menu Button + Popup */
+        #menuBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--brand);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 20;
+        }
+        #categoryPopup {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #fff;
+            border-radius: 12px;
+            width: 240px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            padding: 12px;
+            display: none;
+            z-index: 20;
+            border: 1px solid var(--border);
+        }
+        #categoryPopup h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 6px;
+            color: #111827;
+        }
+        #categoryPopup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 280px;
+            overflow: auto;
+        }
+        #categoryPopup li {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #categoryPopup li:hover {
+            background: #fff3e6;
+        }
+        #categoryPopup .count {
+            margin-left: auto;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+            padding: 0 8px;
+            font-size: 12px;
+            line-height: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <span class="brand">SAMUDRA GRAND</span> <span class="wave">~</span> <span class="sub">Multi‑Cuisine Family Restaurant</span>
+</header>
+
+<!-- Image carousel banners -->
+<div class="carousel" aria-label="Promotions">
+    <div class="carousel-track" id="carouselTrack">
+        <!-- Replace src paths with your own banner images -->
+        <div class="slide">
+            <img src="images/banner1.jpg" alt="Fresh seafood specials">
+            <div class="caption">Fresh From The Ocean</div>
+        </div>
+        <div class="slide">
+            <img src="banners/banner2.jpg" alt="Signature coastal curries">
+            <div class="caption">Signature Coastal Curries</div>
+        </div>
+        <div class="slide">
+            <img src="banners/banner3.jpg" alt="Weekend seafood feast">
+            <div class="caption">Weekend Seafood Feast</div>
+        </div>
+    </div>
+    <div class="dots" id="carouselDots" aria-hidden="true"></div>
+</div>
+
+<div class="filters">
+    <button class="active" onclick="setFilter('all', this)">All</button>
+    <button onclick="setFilter('veg', this)">Veg</button>
+    <button onclick="setFilter('nonveg', this)">Non-Veg</button>
+</div>
+
+<div id="menu"></div>
+
+<script>
+    // Replace your existing menuData with this larger set
+    const menuData = [
+        {
+            category: 'Starters',
+            items: [
+                { name: 'Veg Manchurian', tname: 'వెజ్ మాంచూరియన్', price: 180, type: 'veg', desc: 'Crispy veg balls in spicy sauce' },
+                { name: 'Chicken 65', tname: 'చికెన్ 65', price: 240, type: 'nonveg', desc: 'Spicy deep fried chicken' },
+                { name: 'Gobi 65', tname: 'గోబీ 65', price: 170, type: 'veg', desc: 'Crispy cauliflower tossed in masala' },
+                { name: 'Pepper Chicken', tname: 'మిరియాల చికెన్', price: 260, type: 'nonveg', desc: 'Fiery black pepper masala' }
+            ]
+        },
+        {
+            category: 'Soups',
+            items: [
+                { name: 'Tomato Soup', tname: 'టమాటో సూప్', price: 130, type: 'veg', desc: 'Creamy, classic comfort' },
+                { name: 'Sweet Corn Soup', tname: 'స్వీట్ కార్న్ సూప్', price: 140, type: 'veg', desc: 'Mild and sweet corn broth' },
+                { name: 'Chicken Clear Soup', tname: 'చికెన్ క్లియర్ సూప్', price: 160, type: 'nonveg', desc: 'Light, aromatic chicken broth' },
+                { name: 'Hot & Sour Chicken Soup', tname: 'హాట్ అండ్ సవర్ చికెన్ సూప్', price: 170, type: 'nonveg', desc: 'Tangy, spicy, hearty' }
+            ]
+        },
+        {
+            category: 'Seafood',
+            items: [
+                { name: 'Prawn Masala', tname: 'ప్రాన్స్ మసాలా', price: 380, type: 'nonveg', desc: 'Coastal style spicy prawn curry' },
+                { name: 'Fish Fry', tname: 'చేప వేపుడు', price: 340, type: 'nonveg', desc: 'Shallow fried, crispy fillets' },
+                { name: 'Crab Curry', tname: 'పీత కూర', price: 420, type: 'nonveg', desc: 'Rich, aromatic crab gravy' },
+                { name: 'Squid Pepper Fry', tname: 'స్క్విడ్ పెప్పర్ ఫ్రై', price: 360, type: 'nonveg', desc: 'Tender squid with pepper spice' }
+            ]
+        },
+        {
+            category: 'Tandoori',
+            items: [
+                { name: 'Paneer Tikka', tname: 'పనీర్ టిక్కా', price: 280, type: 'veg', desc: 'Char-grilled cottage cheese' },
+                { name: 'Chicken Tikka', tname: 'చికెన్ టిక్కా', price: 320, type: 'nonveg', desc: 'Smoky, juicy tandoor chicken' },
+                { name: 'Tandoori Chicken (Half)', tname: 'తందూరి చికెన్ (హాఫ్)', price: 360, type: 'nonveg', desc: 'Classic clay-oven roast' },
+                { name: 'Malai Broccoli', tname: 'మలై బ్రొక్కలి', price: 260, type: 'veg', desc: 'Creamy, cheesy broccoli florets' }
+            ]
+        },
+        {
+            category: 'Main Course',
+            items: [
+                { name: 'Paneer Butter Masala', tname: 'పనీర్ బట్టర్ మసాలా', price: 260, type: 'veg', desc: 'Creamy tomato gravy' },
+                { name: 'Chicken Biryani', tname: 'చికెన్ బిర్యాని', price: 320, type: 'nonveg', desc: 'Aromatic basmati rice' },
+                { name: 'Dal Tadka', tname: 'దాల్ తడ్కా', price: 190, type: 'veg', desc: 'Yellow lentils tempered with ghee' },
+                { name: 'Mutton Rogan Josh', tname: 'మటన్ రోగన్ జోష్', price: 420, type: 'nonveg', desc: 'Kashmiri style rich curry' }
+            ]
+        },
+        {
+            category: 'Breads',
+            items: [
+                { name: 'Butter Naan', tname: 'బట్టర్ నాన్', price: 50, type: 'veg', desc: 'Soft leavened flatbread' },
+                { name: 'Garlic Naan', tname: 'గార్లిక్ నాన్', price: 70, type: 'veg', desc: 'Garlic, coriander topped naan' },
+                { name: 'Tandoori Roti', tname: 'తందూరి రోటీ', price: 35, type: 'veg', desc: 'Whole wheat, clay-oven baked' }
+            ]
+        },
+        {
+            category: 'Rice & Noodles',
+            items: [
+                { name: 'Veg Fried Rice', tname: 'వెజ్ ఫ్రైడ్ రైస్', price: 200, type: 'veg', desc: 'Wok-tossed rice with veggies' },
+                { name: 'Egg Fried Rice', tname: 'ఎగ్ ఫ్రైడ్ రైస్', price: 220, type: 'nonveg', desc: 'Classic, fluffy egg fried rice' },
+                { name: 'Chicken Noodles', tname: 'చికెన్ నూడుల్స్', price: 240, type: 'nonveg', desc: 'Stir-fried noodles with chicken' },
+                { name: 'Veg Hakka Noodles', tname: 'వెజ్ హక్కా నూడుల్స్', price: 210, type: 'veg', desc: 'Street-style Indo‑Chinese noodles' }
+            ]
+        },
+        {
+            category: 'Salads',
+            items: [
+                { name: 'Green Salad', tname: 'గ్రీన్ సలాడ్', price: 120, type: 'veg', desc: 'Fresh crunchy greens' },
+                { name: 'Kachumber Salad', tname: 'కచుంబర్ సలాడ్', price: 110, type: 'veg', desc: 'Onion, tomato, cucumber mix' },
+                { name: 'Chicken Caesar Salad', tname: 'చికెన్ సీజర్ సలాడ్', price: 240, type: 'nonveg', desc: 'Grilled chicken, creamy dressing' }
+            ]
+        },
+        {
+            category: 'Desserts',
+            items: [
+                { name: 'Gulab Jamun', tname: 'గులాబ్ జామున్', price: 120, type: 'veg', desc: 'Warm sugar syrup dumplings' },
+                { name: 'Ice Cream Scoop', tname: 'ఐస్ క్రీం స్కూప్', price: 90, type: 'veg', desc: 'Ask for today’s flavors' },
+                { name: 'Chocolate Brownie', tname: 'చాక్లెట్ బ్రౌనీ', price: 160, type: 'veg', desc: 'Fudgy, rich chocolate' },
+                { name: 'Fruit Salad', tname: 'ఫ్రూట్ సలాడ్', price: 140, type: 'veg', desc: 'Seasonal fruits medley' }
+            ]
+        },
+        {
+            category: 'Beverages',
+            items: [
+                { name: 'Masala Chaas', tname: 'మసాలా చాస్', price: 80, type: 'veg', desc: 'Spiced buttermilk' },
+                { name: 'Fresh Lime Soda', tname: 'ఫ్రెష్ లైమ్ సోడా', price: 90, type: 'veg', desc: 'Sweet/Salt as you like' },
+                { name: 'Lassi (Sweet)', tname: 'లస్సీ (తీపి)', price: 110, type: 'veg', desc: 'Thick, creamy yogurt drink' },
+                { name: 'Cold Coffee', tname: 'కోల్డ్ కాఫీ', price: 140, type: 'veg', desc: 'Iced, lightly sweetened' }
+            ]
+        }
+    ];
+
+
+    let currentFilter = 'all';
+
+    function filteredCountFor(cat) {
+        return cat.items.filter(i => currentFilter === 'all' || i.type === currentFilter).length;
+    }
+
+    function setFilter(type, btn) {
+        currentFilter = type;
+        document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMenu();
+        buildCategoryList();
+    }
+
+        function placeholder(name) {
+                const initials = name.split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
+                const svg = `
+<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'>
+    <defs>
+        <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+            <stop offset='0%' stop-color='#e6f0fa'/>
+            <stop offset='100%' stop-color='#cfe3fa'/>
+        </linearGradient>
+    </defs>
+    <rect width='100%' height='100%' fill='url(#g)'/>
+    <text x='50%' y='52%' font-size='64' font-family='Arial,Helvetica,sans-serif' fill='#0b5fa5' text-anchor='middle' dominant-baseline='middle' font-weight='700'>${initials}</text>
+    <text x='50%' y='88%' font-size='20' font-family='Arial,Helvetica,sans-serif' fill='#334155' text-anchor='middle'>${name}</text>
+</svg>`;
+                return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+        }
+
+        function getImageSrc(item) {
+                return item.image ? item.image : placeholder(item.name);
+        }
+
+        function renderMenu() {
+        const menu = document.getElementById('menu');
+        menu.innerHTML = '';
+
+        menuData.forEach(cat => {
+            const items = cat.items.filter(i => currentFilter === 'all' || i.type === currentFilter);
+            if (!items.length) return; // hide empty categories
+
+            const section = document.createElement('div');
+            section.setAttribute('data-category', cat.category);
+            section.className = 'category';
+            section.innerHTML = `<h2>${cat.category}</h2>`;
+
+            const grid = document.createElement('div');
+            grid.className = 'items';
+
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <div class="thumb">
+                        <img src="${getImageSrc(item)}" alt="${item.name}" loading="lazy" />
+                    </div>
+                    <div class="title-row">
+                        <div class="item-title" title="${item.name}">
+                            <span class="name-en">${item.name}</span>
+                            ${item.tname ? '<span class="name-te">' + item.tname + '</span>' : ''}
+                        </div>
+                        <span class="price">₹${item.price}</span>
+                    </div>
+                    <p class="desc">${item.desc}</p>
+                    <span class="badge ${item.type}">
+                        <span class="dot"></span>${item.type === 'veg' ? 'Veg' : 'Non‑Veg'}
+                    </span>
+                `;
+                grid.appendChild(div);
+            });
+
+            section.appendChild(grid);
+            menu.appendChild(section);
+        });
+
+        if (!menu.hasChildNodes()) {
+            const empty = document.createElement('div');
+            empty.className = 'empty';
+            empty.textContent = 'No items match this filter.';
+            menu.appendChild(empty);
+        }
+    }
+
+    renderMenu();
+</script>
+
+<!-- Floating Menu Button -->
+<button id="menuBtn">☰ Menu</button>
+
+<!-- Category Popup -->
+<div id="categoryPopup">
+    <h3>Categories</h3>
+    <ul id="categoryList"></ul>
+</div>
+
+<script>
+    // Category popup logic
+    const menuBtn = document.getElementById('menuBtn');
+    const popup = document.getElementById('categoryPopup');
+    const categoryList = document.getElementById('categoryList');
+
+    menuBtn.onclick = () => {
+        popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+    };
+
+    function buildCategoryList() {
+        categoryList.innerHTML = '';
+        menuData.forEach(cat => {
+            const count = filteredCountFor(cat);
+            if (!count) return; // hide categories with no items under current filter
+
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${cat.category}</span><span class="count">${count}</span>`;
+            li.onclick = () => {
+                document.querySelector(`[data-category='${cat.category}']`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                popup.style.display = 'none';
+            };
+            categoryList.appendChild(li);
+        });
+    }
+
+    buildCategoryList();
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!popup.contains(e.target) && e.target !== menuBtn) {
+            popup.style.display = 'none';
+        }
+    });
+
+    // Simple auto-swiping carousel (left)
+    const track = document.getElementById('carouselTrack');
+    const slides = Array.from(track.children);
+    const dotsWrap = document.getElementById('carouselDots');
+
+    let index = 0;
+    let timer;
+
+    function makeDots() {
+        slides.forEach((_, i) => {
+            const d = document.createElement('span');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.addEventListener('click', () => goTo(i, true));
+            dotsWrap.appendChild(d);
+        });
+    }
+
+    function setActiveDot() {
+        dotsWrap.querySelectorAll('.dot').forEach((d, i) => {
+            d.classList.toggle('active', i === index);
+        });
+    }
+
+    function goTo(i, manual=false) {
+        index = (i + slides.length) % slides.length;
+        track.style.transform = `translateX(-${index * 100}%)`;
+        setActiveDot();
+        if (manual) restart();
+    }
+
+    function next() {
+        goTo(index + 1);
+    }
+
+    function start() {
+        timer = setInterval(next, 3500);
+    }
+    function stop() {
+        clearInterval(timer);
+    }
+    function restart() {
+        stop();
+        start();
+    }
+
+    // Pause on hover for UX
+    track.parentElement.addEventListener('mouseenter', stop);
+    track.parentElement.addEventListener('mouseleave', start);
+
+    makeDots();
+    start();
+</script>
+
+</body>
+</html>
